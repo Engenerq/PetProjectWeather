@@ -11,7 +11,7 @@ class WeatherService:
     async def get_weather(self, data: GetWeatherByCity) -> WeatherResponse:
         """
         Вернуть погоду по названию городу
-        :return:
+        :return: возвращает модель WeatherResponse
         """
 
         return await self.repo.get_weather(data)

@@ -1,27 +1,24 @@
-from app.models.weather import WeatherResponse, GetWeatherByCity
-from requests import get
 from dotenv import dotenv_values
+import httpx
+
+from app.models.weather import WeatherResponse, GetWeatherByCity
 
 
 class WeatherRepository:
     model = WeatherResponse
 
-    async def get_weather(self, payload: GetWeatherByCity) -> model:
+    async def get_weather(self, payload: GetWeatherByCity) -> WeatherResponse:
         """
         Запрос о погоде на сервис openweather
-        :payload: город(eng)
-        :return:
+        :payload: модель с параметром city
+        :return: возвращает модель WeatherResponse
         """
 
-        req = get(
-            f"https://api.openweathermap.org/data/2.5/weather?"
+        req_for_openweather = (
+            f"https://api.openweathermap.org/data/2.5/weather?lang=ru&units=metric&"
             f"q={payload.city}&"
-            f"units=metric"
-            f"&lang=ru&"
-            f"appid={dotenv_values()['TOKEN']}").json()
+            f"appid={dotenv_values()['TOKEN']}")
 
-        data = self.model(temp=req["main"]["temp"],
-                          pressure=req["main"]["pressure"],
-                          wind_speed=req["wind"]["speed"])
-
-        return data
+        async with httpx.AsyncClient() as client:
+            data = await client.get(req_for_openweather)
+            return self.model.from_response(data.json())

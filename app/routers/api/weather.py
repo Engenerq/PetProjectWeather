@@ -16,6 +16,13 @@ async def get_weather(
         payload: GetWeatherByCity = Depends(GetWeatherByCity),
         service: WeatherService = Depends(WeatherService),
 ):
+    """
+    Выдаёт погоду по запрошенному городу
+    :param payload:
+    :param service:
+    :return:
+    """
+
     data = await service.get_weather(payload)
 
     return data
