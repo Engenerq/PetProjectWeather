@@ -18,9 +18,9 @@ async def get_weather(
 ):
     """
     Выдаёт погоду по запрошенному городу
-    :param payload:
-    :param service:
-    :return:
+    :param payload: параметры запроса
+    :param service: сервис для получения данных
+    :return: возвращает ответ от сервиса в формате json
     """
 
     data = await service.get_weather(payload)

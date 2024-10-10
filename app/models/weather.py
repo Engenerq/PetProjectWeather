@@ -1,23 +1,25 @@
+import json
 import re
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, field_validator
 
 
 class GetWeatherByCity(BaseModel):
     """
-    Параметры запроса погоды по городу
+    Параметры запроса
     """
 
     city: str
 
-    @model_validator(mode="after")
-    def city_english(self) -> "GetWeatherByCity":
+    @field_validator("city")
+    @classmethod
+    def city_english(cls, value: str):
         """
         Валидатор названия города
         :return: возвращает город
         """
-        if not re.match(r"^[a-zA-Z]+$", self.city):
+        if not re.match(r"^[a-zA-Z]+$", value):
             raise ValueError("Город должен состоять из английских букв")
-        return self
+        return value
 
 
 class WeatherResponse(BaseModel):
@@ -36,8 +38,8 @@ class WeatherResponse(BaseModel):
         :param response: ответ от сервиса в формате json
         :return: возвращает заполненную модель WeatherResponse
         """
-        cls.temp = response["main"]["temp"]
-        cls.pressure = response["main"]["pressure"]
-        cls.wind_speed = response["wind"]["speed"]
 
-        return cls
+        return cls(temp=response["main"]["temp"],
+                   pressure=response["main"]["pressure"],
+                   wind_speed=response["wind"]["speed"]
+                   )

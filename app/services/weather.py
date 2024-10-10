@@ -10,8 +10,9 @@ class WeatherService:
 
     async def get_weather(self, data: GetWeatherByCity) -> WeatherResponse:
         """
-        Вернуть погоду по названию городу
-        :return: возвращает модель WeatherResponse
+        Запрос погоды в населенном пункте
+        :param data: модель с данными для запроса
+        :return: возвращает заполненную модель от репозитория
         """
 
         return await self.repo.get_weather(data)
